@@ -68,5 +68,5 @@ export const fetchMoviesCredits = id => {
   return apiCall(movieCreditsEndpoint(id));
 };
 export const fetchSimilarMovies = id => {
-  return apiCall(movieDetailsEndpoint(id));
+  return apiCall(similarMoviesEndpoint(id));
 };

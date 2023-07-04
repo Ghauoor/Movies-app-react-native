@@ -1,12 +1,11 @@
 import React from 'react';
 import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {fallbackPersonImage, image185} from '../api/movieDb';
 
 export default function Cast({cast, navigation}) {
-  let personName = 'Paul Rudd';
-  let characterName = 'Ant Man';
   return (
     <View className="my-6">
-      <Text className="text-white text-lg mx-4 mb- 5  ">Top Cast</Text>
+      <Text className="text-white text-lg mx-4 mb-5 ">Top Cast</Text>
       <ScrollView
         horizontal
         showHorizontalScrollIndicator={false}
@@ -21,19 +20,23 @@ export default function Cast({cast, navigation}) {
                 <View className="overflow-hidden rounded-full h-20 w-20 items-center border-neutral-500">
                   <Image
                     className="rounded-2xl h-24 w-20"
-                    source={require('../../assets/images/paul-rudd.jpg')}
+                    source={{
+                      uri:
+                        image185(person?.profile_path) || fallbackPersonImage,
+                    }}
+                    // source={require('../../assets/images/paul-rudd.jpg')}
                   />
                 </View>
 
                 <Text className="text-white text-xs mt-1">
-                  {characterName.length > 10
-                    ? characterName.slice(0, 10) + '...'
-                    : characterName}
+                  {person?.character && person?.character.length > 10
+                    ? person?.character.slice(0, 10) + '...'
+                    : person?.character}
                 </Text>
                 <Text className="text-neutral-400 text-xs mt-1">
-                  {personName.length > 10
-                    ? personName.slice(0, 10) + '...'
-                    : personName}
+                  {person?.orignal_name && person?.orignal_name.length > 10
+                    ? person?.orignal_name.slice(0, 10) + '...'
+                    : person?.orignal_name}
                 </Text>
               </TouchableOpacity>
             );

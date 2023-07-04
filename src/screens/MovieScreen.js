@@ -18,20 +18,22 @@ import Cast from '../components/Cast';
 import MovieList from '../components/MovieList';
 import {
   fallbackMoviePoster,
+  fetchMoviesCredits,
   fetchMoviesDetails,
+  fetchSimilarMovies,
   image500,
 } from '../api/movieDb';
+import Loading from '../components/Loading';
 
 let {width, height} = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
 const topMargin = ios ? '' : 'mt-3';
-const movieName = 'Ant Man and the WASP';
 
 const MovieScreen = () => {
   //recieve the movie i just pass
   const {params: item} = useRoute();
   const navigation = useNavigation();
-  const [cast, setCast] = useState([1, 2, 3, 4, 5]);
+  const [cast, setCast] = useState([]);
   //State for heart icon
   const [isFavourite, toggleFavourite] = useState(false);
   const [similarMovies, setSimilarMovies] = useState([]);
@@ -39,14 +41,16 @@ const MovieScreen = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     //Call the Movie Api
-    // console.log('ItemId:', item.id)
     setLoading(true);
+
     getMovieDetails(item.id);
-    setLoading(false);
+    getMovieCredits(item.id);
+    getSimilarMovies(item.id);
   }, [item]);
   const getMovieDetails = async id => {
     try {
       const data = await fetchMoviesDetails(id);
+      setLoading(false);
       if (data) {
         setMovie(data);
       }
@@ -55,6 +59,29 @@ const MovieScreen = () => {
       console.warn(error);
     }
   };
+
+  //get movies credits
+  const getMovieCredits = async id => {
+    try {
+      const data = await fetchMoviesCredits(id);
+      if (data && data.cast) {
+        setCast(data.cast);
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+  const getSimilarMovies = async id => {
+    try {
+      const data = await fetchSimilarMovies(id);
+      if (data && data.results) {
+        setSimilarMovies(data.results);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -89,7 +116,7 @@ const MovieScreen = () => {
           </TouchableOpacity>
         </SafeAreaView>
         {loading ? (
-          <loading />
+          <Loading />
         ) : (
           <View>
             <Image
@@ -156,11 +183,14 @@ const MovieScreen = () => {
       <Cast navigation={navigation} cast={cast} />
 
       {/* Similar Movies */}
-      {/* <MovieList
-        title="Similar Movies"
-        hideSeeAll={true}
-        data={similarMovies}
-      /> */}
+
+      {
+        <MovieList
+          title={'Similar Movies'}
+          hideSeeAll={true}
+          data={similarMovies}
+        />
+      }
     </ScrollView>
   );
 };
