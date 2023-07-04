@@ -16,6 +16,11 @@ import {styles, theme} from '../theme/theme';
 import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
 import MovieList from '../components/MovieList';
+import {
+  fallbackMoviePoster,
+  fetchMoviesDetails,
+  image500,
+} from '../api/movieDb';
 
 let {width, height} = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
@@ -29,11 +34,27 @@ const MovieScreen = () => {
   const [cast, setCast] = useState([1, 2, 3, 4, 5]);
   //State for heart icon
   const [isFavourite, toggleFavourite] = useState(false);
-  const [similarMovies, setSimilarMovies] = useState([1, 2, 4, , 5]);
+  const [similarMovies, setSimilarMovies] = useState([]);
+  const [movie, setMovie] = useState({});
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     //Call the Movie Api
+    // console.log('ItemId:', item.id)
+    setLoading(true);
+    getMovieDetails(item.id);
+    setLoading(false);
   }, [item]);
+  const getMovieDetails = async id => {
+    try {
+      const data = await fetchMoviesDetails(id);
+      if (data) {
+        setMovie(data);
+      }
+      // console.log('Get the Movie Details', data);
+    } catch (error) {
+      console.warn(error);
+    }
+  };
   return (
     <ScrollView
       contentContainerStyle={{
@@ -72,7 +93,10 @@ const MovieScreen = () => {
         ) : (
           <View>
             <Image
-              source={require('../../assets/images/antman.jpg')}
+              source={{
+                uri: image500(movie?.poster_path || fallbackMoviePoster),
+              }}
+              // source={require('../../assets/images/antman.jpg')}
               style={{width, height: height * 0.55}}
             />
             <LinearGradient
@@ -93,39 +117,50 @@ const MovieScreen = () => {
       <View style={{marginTop: -(height * 0.09)}} className="space-y-3">
         {/* Movie title */}
         <Text className="text-white text-center text-3xl font-bold tracking tracking-wider">
-          {movieName}
+          {movie?.title}
         </Text>
         {/* status release date runtime */}
-        <Text className="text-neutral-400 font-base text-center">
-          Released * 2020 * 170min
-        </Text>
-        {/* Genre */}
-        <View className="flex-row justify-center mx-4 space-x-2">
-          <Text className="text-neutral-400 font-semibold text-base text-center">
-            Action
+        {movie?.id ? (
+          <Text className="text-neutral-400 font-base text-center">
+            {movie?.status} • {movie?.release_date} • {movie?.runtime}
           </Text>
-          <Text className="text-neutral-400 font-semibold text-base text-center">
+        ) : null}
+
+        {/* Genre */}
+
+        <View className="flex-row justify-center mx-4 space-x-2">
+          {movie?.genres?.map((genre, index) => {
+            let showDot = index + 1 != movie.genres.length;
+            return (
+              <Text
+                key={index}
+                className="text-neutral-400 font-semibold text-base text-center">
+                {genre?.name} {showDot ? '•' : null}
+              </Text>
+            );
+          })}
+
+          {/* <Text className="text-neutral-400 font-semibold text-base text-center">
             Thrill
           </Text>
           <Text className="text-neutral-400 font-semibold text-base text-center">
             Super Hero
-          </Text>
+          </Text> */}
         </View>
         {/* Description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
-          Ant-Man and the Wasp team up for a thrilling, action-packed adventure,
-          shrinking and growing their way through obstacles to save the day.
+          {movie?.overview}
         </Text>
       </View>
       {/* cast scroll view */}
       <Cast navigation={navigation} cast={cast} />
 
       {/* Similar Movies */}
-      <MovieList
+      {/* <MovieList
         title="Similar Movies"
         hideSeeAll={true}
         data={similarMovies}
-      />
+      /> */}
     </ScrollView>
   );
 };

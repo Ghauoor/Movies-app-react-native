@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 import {styles} from '../theme/theme';
 import {useNavigation} from '@react-navigation/native';
+import {fallbackMoviePoster, image185} from '../api/movieDb';
 
 let {width, height} = Dimensions.get('window');
 const MovieList = ({title, data, hideSeeAll}) => {
-  let movieName = 'Ant Man and the Wasp';
+  // let movieName = 'Ant Man and the Wasp';
   const navigation = useNavigation();
   return (
     <View className="mb-8 space-y-4">
@@ -40,15 +41,18 @@ const MovieList = ({title, data, hideSeeAll}) => {
               <View className="space-y-1 mr-4">
                 <Image
                   className="rounded-2xl"
-                  source={require('../../assets/images/antman.jpg')}
+                  source={{
+                    uri: image185(item.poster_path) || fallbackMoviePoster,
+                  }}
+                  // source={require('../../assets/images/antman.jpg')}
                   style={{width: width * 0.33, height: height * 0.22}}
                 />
 
                 <Text className="text-neutral-300 ml-1">
-                  {movieName.length > 14
-                    ? movieName.slice(0, 14) + '...'
-                    : movieName}
-                </Text>
+                  {item.title.length > 14
+                    ? item.title.slice(0, 14) + '...'
+                    : item.title}
+                </Text> 
               </View>
             </TouchableWithoutFeedback>
           );

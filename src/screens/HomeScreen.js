@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   SafeAreaView,
@@ -18,14 +18,61 @@ import {styles} from '../theme/theme';
 import TrandingMovies from '../components/TrandingMovies';
 import MovieList from '../components/MovieList';
 import Loading from '../components/Loading';
+import {
+  fetchTopRatedMovies,
+  fetchTrandingMovies,
+  fetchUpcomingMovies,
+} from '../api/movieDb';
 
 const ios = Platform.OS == 'ios';
 const HomeScreen = () => {
-  const [tranding, setTranding] = useState([1, 2, 4]);
-  const [upcomingMovies, setUpcomingMovies] = useState([1, 2, 4]);
-  const [topRatedMovies, setTopRatedMovies] = useState([1, 2, 4]);
+  const [tranding, setTranding] = useState([]);
+  const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  //get movies data
+  useEffect(() => {
+    getTrandingMovies();
+    getUpcomingMovies();
+    getTopRatedMovies();
+  }, []);
+
+  //Tranding movies
+  const getTrandingMovies = async () => {
+    try {
+      const data = await fetchTrandingMovies();
+      // console.log(data);
+      if (data && data.results) setTranding(data.results);
+      setLoading(false);
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+  //getUpcomingMovies
+  const getUpcomingMovies = async () => {
+    try {
+      const data = await fetchUpcomingMovies();
+      // console.log(data);
+      if (data && data.results) setUpcomingMovies(data.results);
+      setLoading(false);
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+  //getTopRatedMovies
+  const getTopRatedMovies = async () => {
+    try {
+      const data = await fetchTopRatedMovies();
+      // console.log(data);
+      if (data && data.results) setTopRatedMovies(data.results);
+      setLoading(false);
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+
   return (
     <View className="flex-1 bg-neutral-800">
       {/* search bar and logo */}
@@ -49,12 +96,18 @@ const HomeScreen = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingBottom: 10}}>
           {/*Tranding Movies Carusal*/}
-          <TrandingMovies data={tranding} />
+          {tranding.length > 0 && <TrandingMovies data={tranding} />}
 
           {/* upcoming movie row */}
-          <MovieList title="Upcoming" data={upcomingMovies} />
+
+          {upcomingMovies.length > 0 && (
+            <MovieList title="Upcoming" data={upcomingMovies} />
+          )}
+
           {/* Top Rated movie row */}
-          <MovieList title="Top Rated" data={topRatedMovies} />
+          {topRatedMovies.length > 0 && (
+            <MovieList title="Top Rated" data={topRatedMovies} />
+          )}
         </ScrollView>
       )}
     </View>
