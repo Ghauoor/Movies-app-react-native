@@ -30,6 +30,7 @@ const MovieScreen = () => {
   //State for heart icon
   const [isFavourite, toggleFavourite] = useState(false);
   const [similarMovies, setSimilarMovies] = useState([1, 2, 4, , 5]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     //Call the Movie Api
   }, [item]);
@@ -66,23 +67,27 @@ const MovieScreen = () => {
             />
           </TouchableOpacity>
         </SafeAreaView>
-        <View>
-          <Image
-            source={require('../../assets/images/antman.jpg')}
-            style={{width, height: height * 0.55}}
-          />
-          <LinearGradient
-            colors={[
-              'transparent',
-              'rgba(23, 23, 23, 0.8)',
-              'rgba(23, 23, 23, 1)',
-            ]}
-            style={{width, height: height * 0.4}}
-            start={{x: 0.5, y: 0}}
-            end={{x: 0.5, y: 1}}
-            className="absolute bottom-0"
-          />
-        </View>
+        {loading ? (
+          <loading />
+        ) : (
+          <View>
+            <Image
+              source={require('../../assets/images/antman.jpg')}
+              style={{width, height: height * 0.55}}
+            />
+            <LinearGradient
+              colors={[
+                'transparent',
+                'rgba(23, 23, 23, 0.8)',
+                'rgba(23, 23, 23, 1)',
+              ]}
+              style={{width, height: height * 0.4}}
+              start={{x: 0.5, y: 0}}
+              end={{x: 0.5, y: 1}}
+              className="absolute bottom-0"
+            />
+          </View>
+        )}
       </View>
       {/* Movie Details View */}
       <View style={{marginTop: -(height * 0.09)}} className="space-y-3">

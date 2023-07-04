@@ -12,10 +12,12 @@ import {
   Bars3BottomLeftIcon,
   MagnifyingGlassIcon,
 } from 'react-native-heroicons/outline';
+import {useNavigation} from '@react-navigation/native';
+
 import {styles} from '../theme/theme';
 import TrandingMovies from '../components/TrandingMovies';
 import MovieList from '../components/MovieList';
-import {useNavigation} from '@react-navigation/native';
+import Loading from '../components/Loading';
 
 const ios = Platform.OS == 'ios';
 const HomeScreen = () => {
@@ -23,6 +25,7 @@ const HomeScreen = () => {
   const [upcomingMovies, setUpcomingMovies] = useState([1, 2, 4]);
   const [topRatedMovies, setTopRatedMovies] = useState([1, 2, 4]);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   return (
     <View className="flex-1 bg-neutral-800">
       {/* search bar and logo */}
@@ -39,17 +42,21 @@ const HomeScreen = () => {
         </View>
       </SafeAreaView>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 10}}>
-        {/*Tranding Movies Carusal*/}
-        <TrandingMovies data={tranding} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: 10}}>
+          {/*Tranding Movies Carusal*/}
+          <TrandingMovies data={tranding} />
 
-        {/* upcoming movie row */}
-        <MovieList title="Upcoming" data={upcomingMovies} />
-        {/* Top Rated movie row */}
-        <MovieList title="Top Rated" data={topRatedMovies} />
-      </ScrollView>
+          {/* upcoming movie row */}
+          <MovieList title="Upcoming" data={upcomingMovies} />
+          {/* Top Rated movie row */}
+          <MovieList title="Top Rated" data={topRatedMovies} />
+        </ScrollView>
+      )}
     </View>
   );
 };
