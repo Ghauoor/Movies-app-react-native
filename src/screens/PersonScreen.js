@@ -73,7 +73,7 @@ export default function PersonScreen() {
             Paul Rudd
           </Text>
           <Text className="text-neutral-500 text-base text-center">
-            UK, London
+            UK, New Jersey
           </Text>
         </View>
         <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full ">
