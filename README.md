@@ -1,11 +1,11 @@
 # Movies-app-react-native
 ## Features
--Custom Search
--Trending movies
--Upcoming Movies
--Similar Movies suggestion
--Actors details
--Actor's Popular Movies 
+- Custom Search
+- Trending movies
+- Upcoming Movies
+- Similar Movies suggestion
+- Actors details
+- Actor's Popular Movies 
 ![Screenshot_1688629640](https://github.com/Ghauoor/Movies-app-react-native/assets/92637639/3e55b6f4-930a-4a4d-a23b-4809d25751ae)
 ![Screenshot_1688629653](https://github.com/Ghauoor/Movies-app-react-native/assets/92637639/0e073630-6449-4f5d-8a86-f59008dfb7ac)
 ![Screenshot_1688629653](https://github.com/Ghauoor/Movies-app-react-native/assets/92637639/82767a0d-bad0-4cad-9d08-1a3dc73af703)
