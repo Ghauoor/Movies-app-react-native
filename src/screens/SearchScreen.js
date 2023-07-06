@@ -39,9 +39,9 @@ export default function SearchScreen() {
         language: 'en-US',
         page: '1',
       }).then(data => {
-        console.log('got search results');
+        //console.log('got search results');
         setLoading(false);
-        console.log(data);
+        // console.log(data);
         if (data && data.results) {
           setResults(data.results);
         }
