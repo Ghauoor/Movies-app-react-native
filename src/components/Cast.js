@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from 'react-native';
 import {fallbackPersonImage, image185} from '../api/movieDb';
 
 export default function Cast({cast, navigation}) {
@@ -9,7 +16,7 @@ export default function Cast({cast, navigation}) {
       <ScrollView
         horizontal
         showHorizontalScrollIndicator={false}
-        contentContainerStyle={{paddingHorizontal: 15, marginTop: 20}}>
+        contentContainerStyle={styles.container}>
         {cast &&
           cast.map((person, index) => {
             return (
@@ -45,3 +52,6 @@ export default function Cast({cast, navigation}) {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {paddingHorizontal: 15, marginTop: 20},
+});

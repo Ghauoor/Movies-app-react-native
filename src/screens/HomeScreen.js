@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import {
   Bars3BottomLeftIcon,
@@ -44,7 +45,9 @@ const HomeScreen = () => {
     try {
       const data = await fetchTrandingMovies();
       // console.log(data);
-      if (data && data.results) setTranding(data.results);
+      if (data && data.results) {
+        setTranding(data.results);
+      }
       setLoading(false);
     } catch (error) {
       console.warn(error);
@@ -55,7 +58,9 @@ const HomeScreen = () => {
     try {
       const data = await fetchUpcomingMovies();
       // console.log(data);
-      if (data && data.results) setUpcomingMovies(data.results);
+      if (data && data.results) {
+        setUpcomingMovies(data.results);
+      }
       setLoading(false);
     } catch (error) {
       console.warn(error);
@@ -66,7 +71,9 @@ const HomeScreen = () => {
     try {
       const data = await fetchTopRatedMovies();
       // console.log(data);
-      if (data && data.results) setTopRatedMovies(data.results);
+      if (data && data.results) {
+        setTopRatedMovies(data.results);
+      }
       setLoading(false);
     } catch (error) {
       console.warn(error);
@@ -94,7 +101,7 @@ const HomeScreen = () => {
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 10}}>
+          contentContainerStyle={style.container}>
           {/*Tranding Movies Carusal*/}
           {tranding.length > 0 && <TrandingMovies data={tranding} />}
 
@@ -113,5 +120,7 @@ const HomeScreen = () => {
     </View>
   );
 };
-
+const style = StyleSheet.create({
+  container: {paddingBottom: 10},
+});
 export default HomeScreen;

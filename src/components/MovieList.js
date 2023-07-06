@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   Image,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
 import {styles} from '../theme/theme';
 import {useNavigation} from '@react-navigation/native';
@@ -32,7 +33,7 @@ const MovieList = ({title, data, hideSeeAll}) => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{paddingHorizontal: 15}}>
+        contentContainerStyle={style.container}>
         {data.map((item, index) => {
           return (
             <TouchableWithoutFeedback
@@ -52,7 +53,7 @@ const MovieList = ({title, data, hideSeeAll}) => {
                   {item.title.length > 14
                     ? item.title.slice(0, 14) + '...'
                     : item.title}
-                </Text> 
+                </Text>
               </View>
             </TouchableWithoutFeedback>
           );
@@ -61,5 +62,7 @@ const MovieList = ({title, data, hideSeeAll}) => {
     </View>
   );
 };
-
+const style = StyleSheet.create({
+  container: {paddingHorizontal: 15},
+});
 export default MovieList;

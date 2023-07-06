@@ -8,6 +8,7 @@ import {
   Platform,
   Text,
   Image,
+  StyleSheet,
 } from 'react-native';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
 import {HeartIcon} from 'react-native-heroicons/solid';
@@ -84,9 +85,7 @@ const MovieScreen = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={{
-        paddingBottom: 20,
-      }}
+      contentContainerStyle={style.container}
       className="flex-1 bg-neutral-900">
       {/* back button and movie poster */}
       <View className="w-full">
@@ -194,5 +193,9 @@ const MovieScreen = () => {
     </ScrollView>
   );
 };
-
+const style = StyleSheet.create({
+  container: {
+    paddingBottom: 20,
+  },
+});
 export default MovieScreen;

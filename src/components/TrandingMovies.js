@@ -5,6 +5,7 @@ import {
   Dimensions,
   Image,
   TouchableWithoutFeedback,
+  StyleSheet,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import {useNavigation} from '@react-navigation/native';
@@ -30,7 +31,7 @@ const TrandingMovies = ({data}) => {
         inactiveSlideOpacity={0.6}
         sliderWidth={width}
         itemWidth={width * 0.62}
-        slideStyle={{display: 'flex', alignItems: 'center'}}
+        slideStyle={styles.carouselStyle}
       />
     </View>
   );
@@ -48,5 +49,7 @@ const MovieCard = ({item, handleClick}) => (
     />
   </TouchableWithoutFeedback>
 );
-
+const styles = StyleSheet.create({
+  carouselStyle: {display: 'flex', alignItems: 'center'},
+});
 export default TrandingMovies;

@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  StyleSheet,
 } from 'react-native';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
 import {HeartIcon} from 'react-native-heroicons/solid';
@@ -96,14 +97,7 @@ export default function PersonScreen() {
         <Loading />
       ) : (
         <View>
-          <View
-            className="flex-row justify-center"
-            style={{
-              shadowColor: 'gray',
-              shadowRadius: 40,
-              shadowOffset: {width: 0, height: 5},
-              shadowOpacity: 1,
-            }}>
+          <View className="flex-row justify-center" style={style.container}>
             <View className="items-center rounded-full overflow-hidden h-72 w-72 border-neutral-500 border-2">
               <Image
                 source={{
@@ -161,3 +155,11 @@ export default function PersonScreen() {
     </ScrollView>
   );
 }
+const style = StyleSheet.create({
+  container: {
+    shadowColor: 'gray',
+    shadowRadius: 40,
+    shadowOffset: {width: 0, height: 5},
+    shadowOpacity: 1,
+  },
+});

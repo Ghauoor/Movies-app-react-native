@@ -9,6 +9,7 @@ import {
   Text,
   TouchableWithoutFeedback,
   Image,
+  StyleSheet,
 } from 'react-native';
 import React, {useState} from 'react';
 import {XMarkIcon} from 'react-native-heroicons/outline';
@@ -76,7 +77,7 @@ export default function SearchScreen() {
       ) : results.length > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingHorizontal: 15}}
+          contentContainerStyle={style.container}
           className="space-y-3">
           <Text className="text-white font-semibold ml-1 ">
             Results ({results.length})
@@ -119,3 +120,6 @@ export default function SearchScreen() {
     </SafeAreaView>
   );
 }
+const style = StyleSheet.create({
+  container: {paddingHorizontal: 15},
+});
