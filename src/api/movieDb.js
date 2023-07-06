@@ -84,3 +84,8 @@ export const fetchPersonDetails = personId => {
 export const fetchPersonMovies = personId => {
   return apiCall(personMoviesEndpoint(personId));
 };
+
+// fetch search-results
+export const searchMovies = params => {
+  return apiCall(searchMoviesEndpoint, params);
+};
