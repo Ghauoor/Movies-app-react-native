@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   SafeAreaView,
@@ -13,72 +13,35 @@ import {
   Bars3BottomLeftIcon,
   MagnifyingGlassIcon,
 } from 'react-native-heroicons/outline';
-import {useNavigation} from '@react-navigation/native';
 
 import {styles} from '../theme/theme';
 import TrandingMovies from '../components/TrandingMovies';
 import MovieList from '../components/MovieList';
 import Loading from '../components/Loading';
+import {useDispatch, useSelector} from 'react-redux';
 import {
-  fetchTopRatedMovies,
-  fetchTrandingMovies,
+  fetchTrendingMovies,
   fetchUpcomingMovies,
-} from '../api/movieDb';
+  fetchTopRatedMovies,
+} from '../features/movies/moviesThunks';
+import {
+  selectTrendingMovies,
+  selectupComingMovies,
+  selectTopRatedMovies,
+} from '../features/movies/moviesSlice';
 
 const ios = Platform.OS == 'ios';
-const HomeScreen = () => {
-  const [tranding, setTranding] = useState([]);
-  const [upcomingMovies, setUpcomingMovies] = useState([]);
-  const [topRatedMovies, setTopRatedMovies] = useState([]);
-  const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
-
+const HomeScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const {trendingMovies, loading} = useSelector(selectTrendingMovies);
+  const {upcomingMovies} = useSelector(selectupComingMovies);
+  const {topRatedMovies} = useSelector(selectTopRatedMovies);
   //get movies data
   useEffect(() => {
-    getTrandingMovies();
-    getUpcomingMovies();
-    getTopRatedMovies();
-  }, []);
-
-  //Tranding movies
-  const getTrandingMovies = async () => {
-    try {
-      const data = await fetchTrandingMovies();
-      // console.log(data);
-      if (data && data.results) {
-        setTranding(data.results);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.warn(error);
-    }
-  };
-  //getUpcomingMovies
-  const getUpcomingMovies = async () => {
-    try {
-      const data = await fetchUpcomingMovies();
-      // console.log(data);
-      if (data && data.results) {
-        setUpcomingMovies(data.results);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.warn(error);
-    }
-  };
-  //getTopRatedMovies
-  const getTopRatedMovies = async () => {
-    try {
-      const data = await fetchTopRatedMovies();
-      // console.log(data);
-      if (data && data.results) {
-        setTopRatedMovies(data.results);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.warn(error);
-    }
-  };
+    dispatch(fetchTrendingMovies());
+    dispatch(fetchUpcomingMovies());
+    dispatch(fetchTopRatedMovies());
+  }, [dispatch]);
 
   return (
     <View className="flex-1 bg-neutral-800">
@@ -103,16 +66,18 @@ const HomeScreen = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={style.container}>
           {/*Tranding Movies Carusal*/}
-          {tranding.length > 0 && <TrandingMovies data={tranding} />}
+          {trendingMovies?.length > 0 && (
+            <TrandingMovies data={trendingMovies} />
+          )}
 
           {/* upcoming movie row */}
 
-          {upcomingMovies.length > 0 && (
+          {upcomingMovies?.length > 0 && (
             <MovieList title="Upcoming" data={upcomingMovies} />
           )}
 
           {/* Top Rated movie row */}
-          {topRatedMovies.length > 0 && (
+          {topRatedMovies?.length > 0 && (
             <MovieList title="Top Rated" data={topRatedMovies} />
           )}
         </ScrollView>

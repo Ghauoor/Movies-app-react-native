@@ -10,59 +10,40 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
 import {HeartIcon} from 'react-native-heroicons/solid';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {styles} from '../theme/theme';
 import MoviesList from '../components/MovieList';
 import Loading from '../components/Loading';
+import {fallbackPersonImage, image342} from '../api/movieAPI';
 import {
-  fallbackPersonImage,
+  selectpersonDetails,
+  selectpersonMovies,
+} from '../features/movies/moviesSlice';
+import {
   fetchPersonDetails,
   fetchPersonMovies,
-  image342,
-} from '../api/movieDb';
+} from '../features/movies/moviesThunks';
 
 const verticalMargin = ios ? '' : ' my-3';
 var {width, height} = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
+
 export default function PersonScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const {personDetails, loading} = useSelector(selectpersonDetails);
+  const {personMovies} = useSelector(selectpersonMovies);
+
   const [isFavourite, toggleFavourite] = useState(false);
-  const [personMovies, setPersonMovies] = useState([]);
-  const [person, setPerson] = useState({});
-  const [loading, setLoading] = useState(false);
   const {params: item} = useRoute();
   useEffect(() => {
-    setLoading(true);
-    // console.log("Person", item)
-    getPersonDetails(item.id);
-    getPersonMovies(item.id);
-  }, [item]);
+    dispatch(fetchPersonDetails(item.id));
+    dispatch(fetchPersonMovies(item.id));
+  }, [item, dispatch]);
 
-  const getPersonDetails = async id => {
-    try {
-      const data = await fetchPersonDetails(id);
-      setLoading(false);
-      if (data) {
-        setPerson(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const getPersonMovies = async id => {
-    try {
-      const data = await fetchPersonMovies(id);
-
-      setLoading(false);
-      if (data && data.cast) {
-        setPersonMovies(data.cast);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <ScrollView
       className="flex-1 bg-neutral-900"
@@ -74,7 +55,7 @@ export default function PersonScreen() {
         }>
         <TouchableOpacity
           className="rounded-xl p-1"
-          onPress={() => navigation.goBack()}>
+          onPress={() => navigation.navigate('Home')}>
           <ChevronLeftIcon
             style={styles.background}
             size="28"
@@ -101,19 +82,20 @@ export default function PersonScreen() {
             <View className="items-center rounded-full overflow-hidden h-72 w-72 border-neutral-500 border-2">
               <Image
                 source={{
-                  uri: image342(person?.profile_path) || fallbackPersonImage,
+                  uri:
+                    image342(personDetails?.profile_path) ||
+                    fallbackPersonImage,
                 }}
-                // source={require('../../assets/images/paul-rudd.jpg')}
                 style={{height: height * 0.43, width: width * 0.74}}
               />
             </View>
           </View>
           <View className="mt-6">
             <Text className="text-3xl text-white font-bold text-center">
-              {person?.name}
+              {personDetails?.name}
             </Text>
             <Text className="text-neutral-500 text-base text-center">
-              {person?.place_of_birth}
+              {personDetails?.place_of_birth}
             </Text>
           </View>
           <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full ">
@@ -121,31 +103,31 @@ export default function PersonScreen() {
               <Text className="text-white font-semibold ">Gender</Text>
               <Text className="text-neutral-300 text-sm">
                 {/* Male */}
-                {person?.gender == 1 ? 'Female' : 'Male'}
+                {personDetails?.gender == 1 ? 'Female' : 'Male'}
               </Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold">Birthday</Text>
               <Text className="text-neutral-300 text-sm">
-                {person?.birthday}
+                {personDetails?.birthday}
               </Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold">known for</Text>
               <Text className="text-neutral-300 text-sm">
-                {person?.known_for_department}
+                {personDetails?.known_for_department}
               </Text>
             </View>
             <View className="px-2 items-center">
               <Text className="text-white font-semibold">Popularity</Text>
               <Text className="text-neutral-300 text-sm">
-                {person?.popularity?.toFixed(2)} %
+                {personDetails?.popularity?.toFixed(2)} %
               </Text>
             </View>
           </View>
           <View className="my-6 mx-4 space-y-2">
             <Text className="text-white text-lg">
-              {person?.biography ? person.biography : 'N/A'}
+              {personDetails?.biography ? personDetails.biography : 'N/A'}
             </Text>
           </View>
           {/* Person Movies */}

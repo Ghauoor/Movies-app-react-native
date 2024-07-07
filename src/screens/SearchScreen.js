@@ -26,22 +26,15 @@ export default function SearchScreen() {
   const navigation = useNavigation();
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const movieName = 'Ant Man and The WASP';
-
-  //! issue wiht this method is it trigger every user tying
-  //* Solution is use debounce method from lodish lib
   const handleSearch = search => {
     if (search && search.length > 2) {
       setLoading(true);
       searchMovies({
         query: search,
-        include_adult: true,
         language: 'en-US',
         page: '1',
       }).then(data => {
-        //console.log('got search results');
         setLoading(false);
-        // console.log(data);
         if (data && data.results) {
           setResults(data.results);
         }

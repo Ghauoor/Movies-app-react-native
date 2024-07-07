@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import {useNavigation} from '@react-navigation/native';
-import {image500} from '../api/movieDb';
+import {fallbackMoviePoster, image500} from '../api/movieAPI';
 
 let {width, height} = Dimensions.get('window');
 const TrandingMovies = ({data}) => {
@@ -26,7 +26,7 @@ const TrandingMovies = ({data}) => {
         renderItem={({item}) => (
           <MovieCard handleClick={handleClick} item={item} />
         )}
-        firstItem={1}
+        firstItem={2}
         inactiveSlideScale={0.86}
         inactiveSlideOpacity={0.6}
         sliderWidth={width}
@@ -40,7 +40,7 @@ const TrandingMovies = ({data}) => {
 const MovieCard = ({item, handleClick}) => (
   <TouchableWithoutFeedback onPress={() => handleClick(item)}>
     <Image
-      source={{uri: image500(item.poster_path)}}
+      source={{uri: image500(item?.poster_path) || fallbackMoviePoster}}
       style={{
         width: width * 0.6,
         height: height * 0.5,

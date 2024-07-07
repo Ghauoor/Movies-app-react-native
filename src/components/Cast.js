@@ -1,22 +1,15 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from 'react-native';
-import {fallbackPersonImage, image185} from '../api/movieDb';
+import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import {fallbackPersonImage, image185} from '../api/movieAPI';
 
 export default function Cast({cast, navigation}) {
   return (
     <View className="my-6">
-      <Text className="text-white text-lg mx-4 mb-5 ">Top Cast</Text>
+      <Text className="text-white text-lg mx-4 mb-5">Top Cast</Text>
       <ScrollView
         horizontal
         showHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.container}>
+        contentContainerStyle={{paddingHorizontal: 15, marginTop: 20}}>
         {cast &&
           cast.map((person, index) => {
             return (
@@ -31,7 +24,6 @@ export default function Cast({cast, navigation}) {
                       uri:
                         image185(person?.profile_path) || fallbackPersonImage,
                     }}
-                    // source={require('../../assets/images/paul-rudd.jpg')}
                   />
                 </View>
 
@@ -52,6 +44,3 @@ export default function Cast({cast, navigation}) {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {paddingHorizontal: 15, marginTop: 20},
-});

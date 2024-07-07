@@ -10,6 +10,7 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
 import {HeartIcon} from 'react-native-heroicons/solid';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -17,71 +18,40 @@ import {styles, theme} from '../theme/theme';
 import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
 import MovieList from '../components/MovieList';
-import {
-  fallbackMoviePoster,
-  fetchMoviesCredits,
-  fetchMoviesDetails,
-  fetchSimilarMovies,
-  image500,
-} from '../api/movieDb';
+import {fallbackMoviePoster, image500} from '../api/movieAPI';
 import Loading from '../components/Loading';
+import {
+  fetchMovieCredits,
+  fetchMovieDetails,
+  fetchSimilarMovies,
+} from '../features/movies/moviesThunks';
+import {
+  selectMoviesDetails,
+  selectMovieCredits,
+  selectsimilarMovies,
+} from '../features/movies/moviesSlice';
+import HeartIconButton from '../components/HeartIconButton';
 
 let {width, height} = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
 const topMargin = ios ? '' : 'mt-3';
 
 const MovieScreen = () => {
-  //recieve the movie i just pass
   const {params: item} = useRoute();
+
   const navigation = useNavigation();
-  const [cast, setCast] = useState([]);
   //State for heart icon
   const [isFavourite, toggleFavourite] = useState(false);
-  const [similarMovies, setSimilarMovies] = useState([]);
-  const [movie, setMovie] = useState({});
-  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const {movieDetails, loading} = useSelector(selectMoviesDetails);
+  const {movieCredits: cast} = useSelector(selectMovieCredits);
+  const {similarMovies} = useSelector(selectsimilarMovies);
   useEffect(() => {
-    //Call the Movie Api
-    setLoading(true);
-
-    getMovieDetails(item.id);
-    getMovieCredits(item.id);
-    getSimilarMovies(item.id);
-  }, [item]);
-  const getMovieDetails = async id => {
-    try {
-      const data = await fetchMoviesDetails(id);
-      setLoading(false);
-      if (data) {
-        setMovie(data);
-      }
-      // console.log('Get the Movie Details', data);
-    } catch (error) {
-      console.warn(error);
-    }
-  };
-
-  //get movies credits
-  const getMovieCredits = async id => {
-    try {
-      const data = await fetchMoviesCredits(id);
-      if (data && data.cast) {
-        setCast(data.cast);
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  };
-  const getSimilarMovies = async id => {
-    try {
-      const data = await fetchSimilarMovies(id);
-      if (data && data.results) {
-        setSimilarMovies(data.results);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    dispatch(fetchMovieDetails(item.id));
+    dispatch(fetchMovieCredits(item.id));
+    dispatch(fetchSimilarMovies(item.id));
+  }, [item, dispatch]);
 
   return (
     <ScrollView
@@ -96,7 +66,7 @@ const MovieScreen = () => {
           }>
           <TouchableOpacity
             className="rounded-xl p-1"
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.navigate('Home')}>
             <ChevronLeftIcon
               style={styles.background}
               size="28"
@@ -104,15 +74,7 @@ const MovieScreen = () => {
               color="white"
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            className="rounded-xl p-1"
-            onPress={() => toggleFavourite(!isFavourite)}>
-            <HeartIcon
-              size="35"
-              strokeWidth={2.5}
-              color={isFavourite ? theme.background : 'white'}
-            />
-          </TouchableOpacity>
+          <HeartIconButton movie={movieDetails} />
         </SafeAreaView>
         {loading ? (
           <Loading />
@@ -120,9 +82,8 @@ const MovieScreen = () => {
           <View>
             <Image
               source={{
-                uri: image500(movie?.poster_path || fallbackMoviePoster),
+                uri: image500(movieDetails?.poster_path || fallbackMoviePoster),
               }}
-              // source={require('../../assets/images/antman.jpg')}
               style={{width, height: height * 0.55}}
             />
             <LinearGradient
@@ -143,20 +104,21 @@ const MovieScreen = () => {
       <View style={{marginTop: -(height * 0.09)}} className="space-y-3">
         {/* Movie title */}
         <Text className="text-white text-center text-3xl font-bold tracking tracking-wider">
-          {movie?.title}
+          {movieDetails?.title}
         </Text>
         {/* status release date runtime */}
-        {movie?.id ? (
+        {movieDetails?.id ? (
           <Text className="text-neutral-400 font-base text-center">
-            {movie?.status} • {movie?.release_date} • {movie?.runtime}
+            {movieDetails?.status} • {movieDetails?.release_date} •{' '}
+            {movieDetails?.runtime}
           </Text>
         ) : null}
 
         {/* Genre */}
 
         <View className="flex-row justify-center mx-4 space-x-2">
-          {movie?.genres?.map((genre, index) => {
-            let showDot = index + 1 != movie.genres.length;
+          {movieDetails?.genres?.map((genre, index) => {
+            let showDot = index + 1 != movieDetails.genres.length;
             return (
               <Text
                 key={index}
@@ -165,17 +127,10 @@ const MovieScreen = () => {
               </Text>
             );
           })}
-
-          {/* <Text className="text-neutral-400 font-semibold text-base text-center">
-            Thrill
-          </Text>
-          <Text className="text-neutral-400 font-semibold text-base text-center">
-            Super Hero
-          </Text> */}
         </View>
         {/* Description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
-          {movie?.overview}
+          {movieDetails?.overview}
         </Text>
       </View>
       {/* cast scroll view */}
